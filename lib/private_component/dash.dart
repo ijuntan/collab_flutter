@@ -1,9 +1,9 @@
-import 'package:collab/home.dart';
-import 'package:collab/settings.dart';
+import 'package:collab/private_component/home.dart';
+import 'package:collab/private_component/settings.dart';
 import 'package:flutter/material.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -17,10 +17,10 @@ class MyHomePage extends StatefulWidget {
   //final title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<DashboardPage> createState() => _DashboardState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _DashboardState extends State<DashboardPage> {
   int _currentMenu = 0;
   List<Widget> menu = [const HomePage(), Container()];
 
