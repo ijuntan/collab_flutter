@@ -1,4 +1,5 @@
 import 'package:collab/custom_widget/my_button.dart';
+import 'package:collab/custom_widget/my_profile_pic.dart';
 import 'package:flutter/material.dart';
 import '../services/auth.dart';
 import 'package:provider/provider.dart';
@@ -39,27 +40,9 @@ class _SettingState extends State<Setting> {
           child: Column(children: [
             const SizedBox(height: 50),
             SizedBox(
-              height: 150,
-              width: 150,
-              child: ClipOval(
-                  child: _pic != null
-                      ? Image.network(_pic!,
-                          height: 150, width: 150, fit: BoxFit.cover,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                              child: CircularProgressIndicator(
-                            color: Color.fromARGB(255, 99, 58, 1),
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                          ));
-                        })
-                      : Image.asset('assets/images/profile.png',
-                          height: 150, width: 150, fit: BoxFit.cover)),
-            ),
+                height: 150,
+                width: 150,
+                child: ProfilePic(pic: _pic != null ? _pic : null, size: 150)),
             const SizedBox(height: 50),
             const Text(
               "Ready to be Productive!",

@@ -16,8 +16,6 @@ class Storage {
   }
 
   void writeStorage(key, value) async {
-    //print(key);
-    //print(value);
     await storage.write(key: key, value: value);
   }
 }

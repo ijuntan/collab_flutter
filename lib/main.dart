@@ -26,27 +26,23 @@ class _MyAppState extends State<MyApp> {
       create: (_) => Auth(),
       child: MaterialApp(
         theme: ThemeData(
-          useMaterial3: true,
-        ),
-        home: Navigation(),
+            useMaterial3: true,
+            scaffoldBackgroundColor: const Color(0xFFFFEFCB),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 146, 64, 14))),
+            bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                backgroundColor: const Color.fromARGB(255, 146, 64, 14),
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.white.withOpacity(0.5)),
+            appBarTheme: const AppBarTheme(
+                backgroundColor: Color.fromARGB(255, 146, 64, 14),
+                foregroundColor: Colors.white)),
+        home: const Navigation(),
       ),
     );
   }
 }
-
-// class Navigation extends StatelessWidget {
-//   const Navigation({Key? key}) : super(key: key);
-//   @override
-//   Widget build(BuildContext context) {
-//     final auth = Provider.of<Auth>(context);
-//     print(auth.isAuth);
-//     if (auth.isAuth) {
-//       return const MyHomePage();
-//     } else {
-//       return const LoginPage();
-//     }
-//   }
-// }
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);

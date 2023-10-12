@@ -1,3 +1,4 @@
+import 'package:collab/custom_widget/my_profile_pic.dart';
 import 'package:collab/private_component/home.dart';
 import 'package:collab/private_component/settings.dart';
 import 'package:flutter/material.dart';
@@ -28,28 +29,24 @@ class _DashboardState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber[800],
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Setting()),
-              );
-            },
-          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Setting()),
+                  );
+                },
+                child: ProfilePic(pic: null, size: 20)),
+          )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         //I want to change the background color of navigation bar
         currentIndex: _currentMenu,
-        selectedItemColor: Colors.white,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -72,8 +69,6 @@ class _DashboardState extends State<DashboardPage> {
             label: 'Notification',
           ),
         ],
-
-        backgroundColor: Colors.amber[800],
         onTap: (value) => setState(() => _currentMenu = value),
       ),
       body: menu[_currentMenu],

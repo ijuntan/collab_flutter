@@ -10,7 +10,7 @@ class Service {
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode(data);
     final response = await http.post(url, headers: headers, body: body);
-    //print(response.body);
+
     if (response.statusCode != 200) {
       throw Exception('Login failed');
     }
