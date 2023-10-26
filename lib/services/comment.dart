@@ -32,4 +32,32 @@ class CommentService {
       throw Exception('Post Comments failed');
     }
   }
+
+  Future<void> deleteComment(String commentId) async {
+    final url = Uri.parse('$baseUrl/$commentId');
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final response = await http.delete(url, headers: headers);
+
+    if (response.statusCode != 200) {
+      throw Exception('Delete Comments failed');
+    }
+  }
+
+  Future<void> editComment(Object comment, String commentId) async {
+    final url = Uri.parse('$baseUrl/$commentId');
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+    final body = json.encode(comment);
+    final response = await http.put(url, headers: headers, body: body);
+
+    if (response.statusCode != 200) {
+      throw Exception('Patch Comments failed');
+    }
+  }
 }

@@ -1,24 +1,17 @@
 import 'package:collab/services/comment.dart';
 import 'package:flutter/material.dart';
-import '../services/storage.dart';
 
-class AddComment extends StatefulWidget {
-  final root, parent, postId;
-  const AddComment({
-    super.key,
-    required this.root,
-    required this.parent,
-    this.postId,
-  });
+class EditComment extends StatefulWidget {
+  final content, id;
+  const EditComment({super.key, required this.content, required this.id});
 
   @override
-  State<AddComment> createState() => _AddCommentState();
+  State<EditComment> createState() => _EditCommentState();
 }
 
-class _AddCommentState extends State<AddComment> {
+class _EditCommentState extends State<EditComment> {
   final _commentFocusNode = FocusNode();
-  final commentController = TextEditingController();
-  String uid = "";
+  late final commentController = TextEditingController(text: widget.content);
 
   @override
   void dispose() {
@@ -30,34 +23,22 @@ class _AddCommentState extends State<AddComment> {
   void initState() {
     super.initState();
 
-    storage.readStorage("_id").then((value) {
-      setState(() {
-        uid = value.toString();
-      });
-    });
     // Request focus on the comment field when the widget is first built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_commentFocusNode);
     });
   }
 
-  void addComment(context) async {
-    // Add comment to the database
-    Object comment = {
-      'content': commentController.text,
-      'like': 0,
-      'dislike': 0,
-      'root': widget.root,
-      'parent': widget.parent,
-      'postId': widget.postId,
-      'createdBy': uid,
-    };
-    await CommentService().addComment(comment);
+  void editComment(context) async {
+    // Patch comment to the database
+    await CommentService().editComment({
+      "content": commentController.text,
+    }, widget.id);
 
     // Clear the comment field
     commentController.clear();
 
-    Navigator.pop(context, false);
+    Navigator.pop(context);
   }
 
   @override
@@ -68,11 +49,11 @@ class _AddCommentState extends State<AddComment> {
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: const Text('Add Comment'),
+        title: const Text('Edit Comment'),
         actions: [
           IconButton(
             icon: const Icon(Icons.send),
-            onPressed: () => addComment(context),
+            onPressed: () => editComment(context),
           ),
         ],
       ),

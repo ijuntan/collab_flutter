@@ -2,80 +2,94 @@ import 'package:collab/services/post.dart';
 import 'package:flutter/material.dart';
 import 'package:collab/custom_widget/my_profile_pic.dart';
 import '../../services/functions.dart';
+import '../services/storage.dart';
 import 'post.dart';
 
 class PostHome extends StatefulWidget {
-  const PostHome({super.key, required this.post});
-  final post;
+  const PostHome({super.key, required this.post, required this.handleDelete});
+  final post, handleDelete;
 
   @override
   State<PostHome> createState() => _PostHomeState();
 }
 
 class _PostHomeState extends State<PostHome> {
-  late final post = super.widget.post;
+  String? uid;
 
-  void goToSinglePostPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              Post(post: post, updateParentPosts: updateAction)),
-    );
-  }
-
-  void updateAction(String action) {
-    PostService().actionPost(action, post['action'], post['_id']);
-
-    switch (action) {
-      case 'Like':
-        switch (post['action']) {
-          case 'Like':
-            setState(() {
-              post['like']--;
-              post['action'] = '';
-            });
-            break;
-          case 'Dislike':
-            setState(() {
-              post['like']++;
-              post['dislike']--;
-              post['action'] = 'Like';
-            });
-            break;
-          default:
-            setState(() {
-              post['like']++;
-              post['action'] = 'Like';
-            });
-        }
-
-      case 'Dislike':
-        switch (post['action']) {
-          case 'Like':
-            setState(() {
-              post['like']--;
-              post['dislike']++;
-              post['action'] = 'Dislike';
-            });
-            break;
-          case 'Dislike':
-            setState(() {
-              post['dislike']--;
-              post['action'] = '';
-            });
-            break;
-          default:
-            setState(() {
-              post['dislike']++;
-              post['action'] = 'Dislike';
-            });
-        }
-    }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    storage.readStorage("_id").then((value) {
+      setState(() {
+        uid = value.toString();
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    var post = super.widget.post;
+
+    void updateAction(String action) {
+      PostService().actionPost(action, post['action'], post['_id']);
+
+      switch (action) {
+        case 'Like':
+          switch (post['action']) {
+            case 'Like':
+              setState(() {
+                post['like']--;
+                post['action'] = '';
+              });
+              break;
+            case 'Dislike':
+              setState(() {
+                post['like']++;
+                post['dislike']--;
+                post['action'] = 'Like';
+              });
+              break;
+            default:
+              setState(() {
+                post['like']++;
+                post['action'] = 'Like';
+              });
+          }
+
+        case 'Dislike':
+          switch (post['action']) {
+            case 'Like':
+              setState(() {
+                post['like']--;
+                post['dislike']++;
+                post['action'] = 'Dislike';
+              });
+              break;
+            case 'Dislike':
+              setState(() {
+                post['dislike']--;
+                post['action'] = '';
+              });
+              break;
+            default:
+              setState(() {
+                post['dislike']++;
+                post['action'] = 'Dislike';
+              });
+          }
+      }
+    }
+
+    void goToSinglePostPage(BuildContext context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Post(post: post, updateParentPosts: updateAction)),
+      );
+    }
+
     return Column(
       children: [
         GestureDetector(
@@ -85,7 +99,7 @@ class _PostHomeState extends State<PostHome> {
           },
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.only(left: 15, top: 10, right: 5),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(
@@ -98,6 +112,33 @@ class _PostHomeState extends State<PostHome> {
                   CircleAvatar(radius: 1.5, backgroundColor: Colors.grey[800]),
                   const SizedBox(width: 5),
                   Text(formatDate('${post['createdAt']}')),
+                  const Spacer(),
+                  post['createdBy']['_id'] == uid
+                      ? PopupMenuButton(
+                          itemBuilder: (BuildContext context) => [
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Text('Edit'),
+                            ),
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Text('Delete'),
+                            ),
+                          ],
+                          onSelected: (value) {
+                            switch (value) {
+                              case 'edit':
+                                // Handle edit action
+
+                                break;
+                              case 'delete':
+                                super.widget.handleDelete(post['_id']);
+                                break;
+                            }
+                          },
+                          child: const Icon(Icons.more_vert),
+                        )
+                      : const SizedBox(),
                 ],
               ),
               const SizedBox(height: 10),
@@ -123,25 +164,28 @@ class _PostHomeState extends State<PostHome> {
               ]),
               const SizedBox(height: 10),
               Text('${post['content']}', softWrap: true),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                      icon: const Icon(Icons.thumb_up),
-                      color: post['action'] == "Like"
-                          ? Colors.green[800]
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        icon: const Icon(Icons.thumb_up),
+                        color: post['action'] == "Like"
+                            ? Colors.green[800]
+                            : Colors.grey[800],
+                        onPressed: () => updateAction("Like")),
+                    Text('${post['like']}'),
+                    IconButton(
+                      icon: const Icon(Icons.thumb_down),
+                      color: post['action'] == "Dislike"
+                          ? Colors.red[800]
                           : Colors.grey[800],
-                      onPressed: () => updateAction("Like")),
-                  Text('${post['like']}'),
-                  IconButton(
-                    icon: const Icon(Icons.thumb_down),
-                    color: post['action'] == "Dislike"
-                        ? Colors.red[800]
-                        : Colors.grey[800],
-                    onPressed: () => updateAction("Dislike"),
-                  ),
-                  Text('${post['dislike']}'),
-                ],
+                      onPressed: () => updateAction("Dislike"),
+                    ),
+                    Text('${post['dislike']}'),
+                  ],
+                ),
               ),
             ]),
           ),

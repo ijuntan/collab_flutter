@@ -16,10 +16,14 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-  late final post = super.widget.post;
-  List<dynamic> comments = [];
+  callback() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    late final post = super.widget.post;
+    //List<dynamic> comments = [];
     Widget commentSection(parentComments, comments) {
       return ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
@@ -35,6 +39,7 @@ class _PostState extends State<Post> {
                 .where((comment) =>
                     comment['root'] == parentComments[index]['_id'])
                 .toList();
+
             return Column(
               children: [
                 Padding(
@@ -43,6 +48,7 @@ class _PostState extends State<Post> {
                     children: [
                       Comment(
                         comment: parentComments[index],
+                        callback: callback,
                       ),
                       childComments.isNotEmpty
                           ? ListView.builder(
@@ -53,6 +59,7 @@ class _PostState extends State<Post> {
                                 return ChildComment(
                                   parentComment: childComments[childIndex],
                                   allComments: allChildComments,
+                                  callback: callback,
                                 );
                               })
                           : Container(),
@@ -87,7 +94,6 @@ class _PostState extends State<Post> {
               parentComments = snapshot.data!
                   .where((comment) => comment['parent'] == null)
                   .toList(); // Filter comments where parent is null;
-
               return SingleChildScrollView(
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -121,10 +127,15 @@ class _PostState extends State<Post> {
             return const Center(child: CircularProgressIndicator());
           }),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: ElevatedButton(
-          onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddComment())),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddComment(
+                      root: null,
+                      parent: null,
+                      postId: post['_id']))).then((_) => setState(() {})),
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),

@@ -10,5 +10,5 @@ String formatDate(String date) {
     return '${DateTime.now().difference(parsedDate).inMinutes}m';
   }
 
-  return '${parsedDate.difference(DateTime.now()).inSeconds}s';
+  return '${DateTime.now().difference(parsedDate).inSeconds}s';
 }

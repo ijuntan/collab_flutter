@@ -26,18 +26,25 @@ class _MyAppState extends State<MyApp> {
       create: (_) => Auth(),
       child: MaterialApp(
         theme: ThemeData(
-            useMaterial3: true,
-            scaffoldBackgroundColor: const Color(0xFFFFEFCB),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 146, 64, 14))),
-            bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                backgroundColor: const Color.fromARGB(255, 146, 64, 14),
-                selectedItemColor: Colors.white,
-                unselectedItemColor: Colors.white.withOpacity(0.5)),
-            appBarTheme: const AppBarTheme(
-                backgroundColor: Color.fromARGB(255, 146, 64, 14),
-                foregroundColor: Colors.white)),
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 146, 64, 14),
+          ),
+          scaffoldBackgroundColor: const Color(0xFFFFEFCB),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 146, 64, 14))),
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+              backgroundColor: const Color.fromARGB(255, 146, 64, 14),
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white.withOpacity(0.5)),
+          appBarTheme: const AppBarTheme(
+              backgroundColor: Color.fromARGB(255, 146, 64, 14),
+              foregroundColor: Colors.white),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              foregroundColor: Colors.white,
+              backgroundColor: Color.fromARGB(255, 146, 64, 14)),
+        ),
         home: const Navigation(),
       ),
     );

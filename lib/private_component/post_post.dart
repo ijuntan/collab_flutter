@@ -67,6 +67,23 @@ class _PostPostState extends State<PostPost> {
             ]),
             const SizedBox(height: 10),
             Text('${post['content']}'),
+            const SizedBox(height: 10),
+            if (post['image'] != null && post['image'] != '')
+              Image.network('${post['image']}',
+                  width: MediaQuery.of(context).size.width,
+                  height: 200,
+                  fit: BoxFit.cover, loadingBuilder: (BuildContext context,
+                      Widget child, ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: Color.fromARGB(255, 99, 58, 1),
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                      : null,
+                ));
+              }),
           ]),
         ),
         Padding(

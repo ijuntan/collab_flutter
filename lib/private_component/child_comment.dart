@@ -2,19 +2,23 @@ import 'package:collab/private_component/comment.dart';
 import 'package:flutter/material.dart';
 
 class ChildComment extends StatefulWidget {
-  final parentComment, allComments;
+  final parentComment, allComments, callback;
   const ChildComment(
-      {super.key, required this.parentComment, required this.allComments});
+      {super.key,
+      required this.parentComment,
+      required this.allComments,
+      this.callback});
 
   @override
   State<ChildComment> createState() => _ChildCommentState();
 }
 
 class _ChildCommentState extends State<ChildComment> {
-  late final parentComment = super.widget.parentComment;
-  late final allComments = super.widget.allComments;
   @override
   Widget build(BuildContext context) {
+    final parentComment = super.widget.parentComment;
+    final allComments = super.widget.allComments;
+
     allComments.removeWhere((item) => item['_id'] == parentComment['_id']);
     List<dynamic> childComments = allComments
         .where((comment) => comment['parent'] == parentComment['_id'])
@@ -31,7 +35,7 @@ class _ChildCommentState extends State<ChildComment> {
         Flexible(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Comment(comment: parentComment),
+            Comment(comment: parentComment, callback: widget.callback),
             childComments.isNotEmpty
                 ? ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -40,7 +44,8 @@ class _ChildCommentState extends State<ChildComment> {
                     itemBuilder: (context, index) {
                       return ChildComment(
                           parentComment: childComments[index],
-                          allComments: allComments);
+                          allComments: allComments,
+                          callback: widget.callback);
                     },
                   )
                 : Container(),

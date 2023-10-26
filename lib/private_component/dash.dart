@@ -1,5 +1,7 @@
 import 'package:collab/custom_widget/my_profile_pic.dart';
+import 'package:collab/private_component/create_post.dart';
 import 'package:collab/private_component/home.dart';
+import 'package:collab/private_component/my_projects.dart';
 import 'package:collab/private_component/settings.dart';
 import 'package:flutter/material.dart';
 
@@ -22,13 +24,29 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardState extends State<DashboardPage> {
-  int _currentMenu = 0;
-  List<Widget> menu = [const HomePage(), Container()];
+  int currentMenuNow = 0;
+
+  List<Widget> menu = [
+    HomePage(),
+    MyProject(),
+    Container(),
+    Container(),
+    Container()
+  ];
+
+  List<String> menuName = [
+    "Home",
+    "Projects",
+    "Create Post",
+    "Chat",
+    "Notification"
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(menuName[currentMenuNow]),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
@@ -39,14 +57,14 @@ class _DashboardState extends State<DashboardPage> {
                     MaterialPageRoute(builder: (context) => const Setting()),
                   );
                 },
-                child: ProfilePic(pic: null, size: 20)),
+                child: const ProfilePic(pic: null, size: 20)),
           )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         //I want to change the background color of navigation bar
-        currentIndex: _currentMenu,
+        currentIndex: currentMenuNow,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -69,9 +87,18 @@ class _DashboardState extends State<DashboardPage> {
             label: 'Notification',
           ),
         ],
-        onTap: (value) => setState(() => _currentMenu = value),
+        onTap: (value) => setState(() => {
+              currentMenuNow = value,
+              if (value == 2)
+                {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CreatePost()),
+                  ).then((_) => setState(() => currentMenuNow = 0))
+                }
+            }),
       ),
-      body: menu[_currentMenu],
+      body: menu[currentMenuNow],
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
